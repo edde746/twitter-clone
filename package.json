@@ -2,7 +2,7 @@
   "name": "twitter-clone",
   "version": "0.0.1",
   "scripts": {
-    "dev": "svelte-kit dev",
+    "dev": "env-cmd svelte-kit dev",
     "build": "svelte-kit build",
     "package": "svelte-kit package",
     "preview": "svelte-kit preview"
@@ -10,7 +10,12 @@
   "devDependencies": {
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/kit": "next",
+    "env-cmd": "^10.1.0",
     "svelte": "^3.44.0"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "redis-om": "^0.1.7"
+  }
 }
