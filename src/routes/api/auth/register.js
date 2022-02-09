@@ -10,7 +10,7 @@ export const post = async ({ request }) => {
   if (existing.length) return { status: 400, body: { error: "Email or username already in use" } };
 
   // Save user to database
-  const user = await userRepo.save(
+  await userRepo.save(
     userRepo.createEntity({
       at: body.get("at"),
       email: body.get("email"),
@@ -18,5 +18,5 @@ export const post = async ({ request }) => {
     })
   );
 
-  return { body: { user } };
+  return { body: { success: true } };
 };

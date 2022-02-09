@@ -16,6 +16,8 @@
   "type": "module",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "cookie": "^0.4.2",
+    "jsonwebtoken": "^8.5.1",
     "redis-om": "^0.1.7"
   }
 }
