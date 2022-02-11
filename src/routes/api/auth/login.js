@@ -6,7 +6,7 @@ import { errorResponse } from "$lib/utils";
 
 export const post = async ({ request }) => {
   const body = await request.formData();
-  const acceptsJson = request.headers.accept?.toLowerCase() == "application/json";
+  const acceptsJson = request.headers.get("accept") == "application/json";
   await connect();
 
   // Fetch user

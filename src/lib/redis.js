@@ -31,6 +31,12 @@ export const postRepo = new Repository(postSchema, client);
 
 connect().then(() => {
   // Rebuilding index
-  userRepo.dropIndex().then(() => userRepo.createIndex());
-  postRepo.dropIndex().then(() => postRepo.createIndex());
+  const rebuildIndex = (repo) =>
+    repo
+      .dropIndex()
+      .then(() => repo.createIndex())
+      .catch(() => repo.createIndex());
+
+  rebuildIndex(userRepo);
+  rebuildIndex(postRepo);
 });
