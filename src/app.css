@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-slate-50 text-slate-700;
+}
+
+input {
+  @apply focus:outline-none;
+}
+
+.field {
+  @apply rounded-full px-4 py-2 text-sm;
+}
+
+.btn {
+  @apply px-4 py-2 rounded-full text-sm font-semibold;
+}
+
+.btn.sky {
+  @apply bg-sky-100 text-sky-700 hover:bg-sky-200;
+}
