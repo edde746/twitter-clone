@@ -8,3 +8,6 @@ export const getSession = async (token) => {
     return false;
   }
 };
+
+export const errorResponse = (acceptsJson, message, redirect = '', status = 400) =>
+  acceptsJson ? { status, body: { error: message } } : { status: 302, redirect: `${redirect}?error=${message}` };
