@@ -19,6 +19,7 @@ class User extends Entity {}
 const userSchema = new Schema(User, {
   at: { type: "string" },
   email: { type: "string" },
+  avatar: { type: "string" },
   password: { type: "string" },
   following: { type: "array" },
 });
@@ -30,20 +31,8 @@ class Post extends Entity {}
 const postSchema = new Schema(Post, {
   author: { type: "string" },
   content: { type: "string" },
-  timestamp: { type: "number" },
+  timestamp: { type: "number", sortable: true },
   likes: { type: "array" },
 });
 
 export const postRepo = new Repository(postSchema, client);
-
-// connect().then(async () => {
-//   // Rebuilding index
-//   const rebuildIndex = (repo) =>
-//     repo
-//       .dropIndex()
-//       .then(() => repo.createIndex())
-//       .catch(() => repo.createIndex());
-// 
-//   await rebuildIndex(userRepo);
-//   await rebuildIndex(postRepo);
-// });

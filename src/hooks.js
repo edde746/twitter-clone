@@ -7,7 +7,7 @@ export const handle = async ({ event, resolve }) => {
   event.locals.session = await sessionFromCookies(cookies.session);
 
   const response = await resolve(event);
-  await disconnect();
+  // await disconnect();
   return response;
 };
 
