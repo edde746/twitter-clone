@@ -5,7 +5,7 @@
   import "../app.css";
 </script>
 
-<ToastContainer {toasts} let:data>
+<ToastContainer {toasts} placement="top-right" let:data>
   <Toast {data} />
 </ToastContainer>
 <slot />

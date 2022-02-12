@@ -10,7 +10,7 @@
   <h2 class="text-xl font-semibold text-zinc-500">twitter-clone</h2>
   <form
     bind:this={form}
-    action="/api/auth/login"
+    action="/api/auth/register"
     method="post"
     class="grid gap-3 w-72"
     use:enhance={{
@@ -18,10 +18,10 @@
         const body = await res.json();
         if (body.success) {
           toasts.success({
-            title: "Logged in",
-            description: `Welcome back, ${body.at}!`,
+            title: "Registered",
+            description: "Please sign in to continue",
           });
-          goto("/");
+          goto("/login");
         } else {
           toasts.error({
             title: "Error",
@@ -32,9 +32,10 @@
       },
     }}
   >
+    <input name="at" placeholder="Handle" class="field" />
     <input name="email" placeholder="E-mail" class="field" />
     <input type="password" name="password" placeholder="Password" class="field" />
-    <button type="submit" class="btn sky">Sign in</button>
+    <button type="submit" class="btn sky">Register</button>
   </form>
-  <p>Don't have an account? <a href="/register" class="text-sky-600 hover:underline">Register here</a></p>
+  <p>Already have an account? <a href="/login" class="text-sky-600 hover:underline">Sign in here</a></p>
 </div>
