@@ -1,10 +1,17 @@
 import { Client, Entity, Schema, Repository } from "redis-om";
 
-const client = new Client();
+export const client = new Client();
 
 export const connect = async () => {
   if (client.isOpen()) return;
   await client.open(process.env["REDIS_CONNECTION"]);
+};
+
+export const disconnect = async () => {
+  try {
+    if (!client.isOpen()) return;
+    await client.close();
+  } catch (ex) {}
 };
 
 // User schema
@@ -29,14 +36,14 @@ const postSchema = new Schema(Post, {
 
 export const postRepo = new Repository(postSchema, client);
 
-connect().then(() => {
-  // Rebuilding index
-  const rebuildIndex = (repo) =>
-    repo
-      .dropIndex()
-      .then(() => repo.createIndex())
-      .catch(() => repo.createIndex());
-
-  rebuildIndex(userRepo);
-  rebuildIndex(postRepo);
-});
+// connect().then(async () => {
+//   // Rebuilding index
+//   const rebuildIndex = (repo) =>
+//     repo
+//       .dropIndex()
+//       .then(() => repo.createIndex())
+//       .catch(() => repo.createIndex());
+// 
+//   await rebuildIndex(userRepo);
+//   await rebuildIndex(postRepo);
+// });

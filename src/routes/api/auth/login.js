@@ -24,14 +24,14 @@ export const post = async ({ request }) => {
       maxAge: 60 * 60 * 24 * 7,
       sameSite: "strict",
       secure: true,
+      path: "/",
     }),
   };
 
   return acceptsJson
-    ? { status: 200, headers, body: { success: true } }
+    ? { status: 200, headers, body: { success: true, at: user.at } }
     : {
         status: 302,
-        redirect: "/",
-        headers,
+        headers: { ...headers, Location: "/" },
       };
 };
