@@ -19,5 +19,5 @@ input {
 }
 
 .btn.sky {
-  @apply bg-sky-100 text-sky-700 hover:bg-sky-200;
+  @apply bg-sky-100 text-sky-700 hover:bg-sky-200 transition;
 }
