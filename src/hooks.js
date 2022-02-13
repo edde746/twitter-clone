@@ -1,10 +1,17 @@
 import { parse } from "cookie";
-import { getSession as sessionFromCookies } from "$lib/utils";
-import { disconnect } from "$lib/redis";
+import jwt from "jsonwebtoken";
+
+const verifySession = (token) => {
+  try {
+    return jwt.verify(token, process.env["JWT_SECRET"]);
+  } catch (ex) {
+    return null;
+  }
+};
 
 export const handle = async ({ event, resolve }) => {
   const cookies = parse(event.request.headers.get("cookie") || "");
-  event.locals.session = await sessionFromCookies(cookies.session);
+  event.locals.session = await verifySession(cookies.session);
 
   const response = await resolve(event);
   // await disconnect();
@@ -13,6 +20,5 @@ export const handle = async ({ event, resolve }) => {
 
 export const getSession = async ({ request }) => {
   const cookies = parse(request.headers.get("cookie") || "");
-  const session = await sessionFromCookies(cookies.session);
-  return session ? session : false;
+  return verifySession(cookies.session);
 };
