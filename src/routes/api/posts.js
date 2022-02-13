@@ -6,7 +6,10 @@ export const get = async ({ locals }) => {
 
   await connect();
   const user = await userRepo.fetch(locals.session.uid);
-  const following = user.following ? [...user.following, user.entityId] : [user.entityId];
+  // Temporary duplicate check since you are able to follow yourself
+  const following = [...new Set(user.following ? [...user.following, user.entityId] : [user.entityId])].filter(
+    (followed) => followed
+  );
 
   const posts = await formatPosts(
     await postRepo.search().where("author").in(following).sortBy("timestamp", "DESC").page(0, 30),

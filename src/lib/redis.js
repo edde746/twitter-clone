@@ -19,6 +19,7 @@ class User extends Entity {}
 const userSchema = new Schema(User, {
   at: { type: "string" },
   email: { type: "string" },
+  bio: { type: "string" },
   avatar: { type: "string" },
   password: { type: "string" },
   following: { type: "array" },

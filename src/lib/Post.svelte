@@ -1,5 +1,6 @@
 <script>
   import { HeartIconOutline, HeartIconSolid } from "@codewithshin/svelte-heroicons";
+  import { DateTime } from "luxon";
   export let post;
 </script>
 
@@ -8,7 +9,7 @@
   <div class="flex-1">
     <div class="flex justify-between items-center">
       <a class="font-semibold text-sm" href={`/@${post.author.at}`}>@{post.author.at}</a>
-      <span class="text-slate-400 text-sm">{new Date(post.timestamp * 1000).toLocaleString()}</span>
+      <span class="text-slate-400 text-sm">{DateTime.fromSeconds(post.timestamp).toRelative()}</span>
     </div>
     <p>{post.content}</p>
     <div class="flex justify-between">
