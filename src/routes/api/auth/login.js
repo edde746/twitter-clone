@@ -7,6 +7,8 @@ import { errorResponse } from "$lib/utils";
 export const post = async ({ request }) => {
   const body = await request.formData();
   const acceptsJson = request.headers.get("accept") == "application/json";
+  if (!body.has("email") || !body.has("password")) return { status: 400, body: { error: "Invalid input" } };
+
   await connect();
 
   // Fetch user

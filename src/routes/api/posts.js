@@ -1,7 +1,7 @@
 import { connect, disconnect, postRepo, userRepo } from "$lib/redis";
 import { formatPosts } from "$lib/utils";
 
-export const get = async ({ locals }) => {
+export const get = async ({ url, locals }) => {
   if (!locals.session) return { status: 403, body: { error: "Not signed in" } };
 
   await connect();
@@ -12,7 +12,12 @@ export const get = async ({ locals }) => {
   );
 
   const posts = await formatPosts(
-    await postRepo.search().where("author").in(following).sortBy("timestamp", "DESC").page(0, 30),
+    await postRepo
+      .search()
+      .where("author")
+      .in(following)
+      .sortBy("timestamp", "DESC")
+      .page((url.searchParams.get("p") || 0) * 10, 10),
     locals.session.uid
   );
 
@@ -24,6 +29,8 @@ export const post = async ({ request, locals }) => {
   const body = await request.formData();
   const acceptsJson = request.headers.get("accept") == "application/json";
   if (!locals.session) return { status: 403, body: { error: "Not authorized" } };
+  if (!body.has("content") || body.get("content").length > 256)
+    return { status: 400, body: { error: "Invalid input" } };
 
   await connect();
   const post = await postRepo.save(
@@ -36,7 +43,7 @@ export const post = async ({ request, locals }) => {
   );
 
   await disconnect();
-  return acceptsJson ? { body: { success: true } } : { status: 302, headers: { Location: "/" } };
+  return acceptsJson ? { body: { success: true, post } } : { status: 302, headers: { Location: "/" } };
 };
 
 export const patch = async ({ request, locals }) => {

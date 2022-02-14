@@ -6,11 +6,7 @@ export const get = async ({ url, locals }) => {
   await connect();
   const results = await Promise.all(
     (
-      await userRepo
-        .search()
-        .where("at")
-        .match(url.searchParams.get("q"))
-        .returnPage(0, 12)
+      await userRepo.search().where("at").match(url.searchParams.get("q")).returnPage(0, 12)
     ).map(async (user) => ({
       at: user.at,
       avatar: user.avatar || "/images/default.png",

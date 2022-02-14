@@ -1,6 +1,6 @@
 import { connect, disconnect, userRepo } from "$lib/redis";
 
-export const get = async ({ request, locals }) => {
+export const get = async ({ locals }) => {
   if (!locals.session) return { status: 403, body: { error: "Not authorized" } };
 
   await connect();
@@ -12,10 +12,11 @@ export const get = async ({ request, locals }) => {
 export const post = async ({ request, locals }) => {
   const body = await request.formData();
   if (!locals.session) return { status: 403, body: { error: "Not signed in" } };
-
+  if (body.has("bio") && body.get("bio").length > 64) return { status: 400, body: { error: "Invalid input" } };
+  
   await connect();
   const user = await userRepo.fetch(locals.session.uid);
-  user.bio = body.get("bio");
+  if (body.has("bio")) user.bio = body.get("bio");
   userRepo.save(user);
   await disconnect();
 

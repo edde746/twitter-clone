@@ -57,7 +57,14 @@
                   },
                 }}
               >
-                <input type="text" name="bio" bind:value={bio} placeholder="Bio" class="bg-transparent" />
+                <input
+                  type="text"
+                  name="bio"
+                  bind:value={bio}
+                  placeholder="Bio"
+                  class="bg-transparent"
+                  maxlength="64"
+                />
                 <button type="submit"> <CheckIconSolid className="h-5 w-5 cursor-pointer" /> </button>
               </form>
             {:else}

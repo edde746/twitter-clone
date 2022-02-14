@@ -5,6 +5,9 @@ import bcrypt from "bcrypt";
 export const post = async ({ request }) => {
   const body = await request.formData();
   const acceptsJson = request.headers.get("accept") == "application/json";
+  if (!body.has("email") || !body.has("password") || !body.has("at"))
+    return { status: 400, body: { error: "Invalid input" } };
+
   await connect();
 
   // Check for existing user

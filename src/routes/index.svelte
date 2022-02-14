@@ -1,8 +1,8 @@
 <script context="module">
   export const load = async ({ session, fetch }) => {
     if (!session) return { status: 302, redirect: "/login" };
-    const posts = await fetch("/api/posts").then((res) => res.json());
-    return { props: { posts } };
+    const feed = await fetch("/api/posts").then((res) => res.json());
+    return { props: { feed } };
   };
 </script>
 
@@ -11,15 +11,31 @@
   import { enhance } from "$lib/form";
   import Interface from "$lib/Interface.svelte";
   import Post from "$lib/Post.svelte";
+  import { me } from "../stores/me";
 
-  export let posts;
+  export let feed;
   let postForm, postMessage;
-
-  const updatePosts = () =>
-    fetch("/api/posts")
-      .then((res) => res.json())
-      .then((updated) => (posts = updated));
+  let page = 0;
+  let disablePostFetch = false;
 </script>
+
+<svelte:window
+  on:scroll={(e) => {
+    if (
+      !disablePostFetch &&
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - window.innerHeight * 0.1
+    ) {
+      disablePostFetch = true;
+      fetch(`/api/posts?p=${++page}`)
+        .then((res) => res.json())
+        .then((res) => {
+          disablePostFetch = res.posts.length == 0;
+          feed.posts = [...feed.posts, ...res.posts];
+          feed.authors = { ...feed.authors, ...res.authors };
+        });
+    }
+  }}
+/>
 
 <Interface>
   <div class="border-x border-slate-300 divide-y divide-slate-300 min-h-screen">
@@ -36,9 +52,25 @@
               title: "Success",
               description: "Your post has been published",
             });
+
+            // Add post to pool
+            feed.posts = [
+              {
+                id: body.post,
+                author: $me.id,
+                content: postMessage,
+                timestamp: new Date() / 1000,
+                likes: 0,
+                liked: false,
+              },
+              ...feed.posts,
+            ];
+            // Make sure we are one of the authors
+            feed.authors[$me.id] = $me;
+
+            // Reset input
             postForm.reset();
             postMessage = "";
-            updatePosts();
           } else {
             toasts.error({
               title: "Error",
@@ -61,10 +93,10 @@
       </div>
     </form>
 
-    {#each posts.posts.map((post) => ({ ...post, author: posts.authors[post.author] })) as post}
+    {#each feed.posts.map((post) => ({ ...post, author: feed.authors[post.author] })) as post}
       <Post {post} />
     {/each}
 
-    <h2 class="text-center p-4">End of feed</h2>
+    <h2 class="text-center p-4">{feed.posts?.length ? "End of feed" : "No posts in feed"}</h2>
   </div>
 </Interface>
