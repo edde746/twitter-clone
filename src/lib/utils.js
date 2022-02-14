@@ -10,6 +10,7 @@ export const formatPosts = async (posts, me, fetchAuthor = true) => {
   const authors = fetchAuthor
     ? Object.fromEntries(
         await Promise.all(
+          // Set to only fetch an author once
           [...new Set(posts.map((post) => post.author))].map(async (author) => {
             author = await userRepo.fetch(author);
             return [

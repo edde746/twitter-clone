@@ -6,19 +6,21 @@ export const get = async ({ url, locals }) => {
 
   await connect();
   const user = await userRepo.fetch(locals.session.uid);
-  // Temporary duplicate check since you are able to follow yourself
-  const following = [...new Set(user.following ? [...user.following, user.entityId] : [user.entityId])].filter(
-    (followed) => followed
-  );
+
+  // Select posts from only these authors
+  let authors;
+  if (url.searchParams.has("u")) authors = [url.searchParams.get("u")];
+  else authors = (user.following ? [...user.following, user.entityId] : [user.entityId]).filter((followed) => followed);
 
   const posts = await formatPosts(
     await postRepo
       .search()
       .where("author")
-      .in(following)
+      .in(authors)
       .sortBy("timestamp", "DESC")
-      .page((url.searchParams.get("p") || 0) * 10, 10),
-    locals.session.uid
+      .page((url.searchParams.get("p") || 0) * 20, 20),
+    locals.session.uid,
+    !url.searchParams.has("u")
   );
 
   await disconnect();
@@ -41,8 +43,8 @@ export const post = async ({ request, locals }) => {
       likes: [],
     })
   );
-
   await disconnect();
+  
   return acceptsJson ? { body: { success: true, post } } : { status: 302, headers: { Location: "/" } };
 };
 

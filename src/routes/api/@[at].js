@@ -1,5 +1,4 @@
 import { connect, disconnect, userRepo, postRepo } from "$lib/redis";
-import { formatPosts } from "$lib/utils";
 
 export const get = async ({ params, locals }) => {
   if (!locals.session) return { status: 403, body: { error: "Not signed in" } };
@@ -10,12 +9,6 @@ export const get = async ({ params, locals }) => {
     await disconnect();
     return { body: { error: "Could not find user" } };
   }
-
-  const posts = await formatPosts(
-    await postRepo.search().where("author").eq(user.entityId).sortBy("timestamp", "DESC").page(0, 30),
-    locals.session.uid,
-    false
-  );
 
   const me = await userRepo.fetch(locals.session.uid);
   const followers = await userRepo.search().where("following").contains(user.entityId).returnCount();
@@ -28,8 +21,7 @@ export const get = async ({ params, locals }) => {
       bio: user.bio,
       avatar: user.avatar || "/images/default.png",
       followers,
-      following: me.following?.includes(user.entityId),
-      posts: posts.posts || [],
+      following: me.following?.includes(user.entityId)
     },
   };
 };

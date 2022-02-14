@@ -4,7 +4,8 @@
   export const load = async ({ session, params, fetch }) => {
     if (!session) return { status: 302, redirect: "/login" };
     const user = await fetch(`/api/@${params.at}`).then((res) => res.json());
-    return { props: { user } };
+    const feed = await fetch(`/api/posts?u=${user.id}`).then((res) => res.json());
+    return { props: { user, feed } };
   };
 </script>
 
@@ -15,12 +16,31 @@
   import Post from "$lib/Post.svelte";
   import { enhance } from "$lib/form";
   import { onMount } from "svelte";
-  export let user;
+  export let user, feed;
   let editingBio = false;
   let bio;
+  let page = 0;
+  let disablePostFetch = false;
 
   onMount(() => (bio = user.bio));
 </script>
+
+<svelte:window
+  on:scroll={(e) => {
+    if (
+      !disablePostFetch &&
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - window.innerHeight * 0.1
+    ) {
+      disablePostFetch = true;
+      fetch(`/api/posts?u=${user.id}&p=${++page}`)
+        .then((res) => res.json())
+        .then((res) => {
+          disablePostFetch = res.posts.length == 0;
+          feed.posts = [...feed.posts, ...res.posts];
+        });
+    }
+  }}
+/>
 
 <Interface>
   <div class="border-x border-slate-300 divide-y divide-slate-300 min-h-screen">
@@ -87,7 +107,11 @@
             on:click={() =>
               fetch(`/api/@${user.at}?follow`, { method: "POST" })
                 .then((res) => res.json())
-                .then((res) => (user.following = res.following))}
+                .then((res) => {
+                  if (user.following && !res.following) user.followers -= 1;
+                  else if (!user.following && res.following) user.followers += 1;
+                  user.following = res.following;
+                })}
           >
             {user.following ? "Unfollow" : "Follow"}
           </button>
@@ -95,7 +119,7 @@
       </div>
     </div>
 
-    {#each user.posts.map((post) => ({ ...post, author: user })) as post}
+    {#each feed.posts.map((post) => ({ ...post, author: user })) as post}
       <Post {post} />
     {/each}
   </div>
