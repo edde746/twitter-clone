@@ -60,6 +60,7 @@
                 id: body.post,
                 author: $me.id,
                 content: body.content,
+                mentions: body.mentions,
                 timestamp: new Date() / 1000,
                 likes: 0,
                 liked: false,

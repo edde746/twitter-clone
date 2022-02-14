@@ -32,6 +32,7 @@ class Post extends Entity {}
 const postSchema = new Schema(Post, {
   author: { type: "string" },
   content: { type: "string" },
+  mentions: { type: "array" },
   timestamp: { type: "number", sortable: true },
   likes: { type: "array" },
 });

@@ -50,16 +50,31 @@ export const post = async ({ request, locals }) => {
   if (content.length <= 0) return { status: 400, body: { error: "Invalid input" } };
 
   await connect();
+  // Filter mentions at correct users
+  const mentions = (
+    await Promise.all(
+      [...content.matchAll(/@[A-Za-z0-9]+/g)].map(async (mentioned) => ({
+        exists: await userRepo.search().where("at").match(mentioned[0].substr(1)).returnCount(),
+        at: mentioned[0],
+      }))
+    )
+  )
+    .filter((user) => user.exists)
+    .map((mention) => mention.at);
+
   const post = await postRepo.save(
     postRepo.createEntity({
       author: locals.session.uid,
       content,
+      mentions: mentions,
       timestamp: Math.round(Date.now() / 1000),
       likes: [],
     })
   );
 
-  return acceptsJson ? { body: { success: true, post, content } } : { status: 302, headers: { Location: "/" } };
+  return acceptsJson
+    ? { body: { success: true, post, content, mentions } }
+    : { status: 302, headers: { Location: "/" } };
 };
 
 export const patch = async ({ request, locals }) => {

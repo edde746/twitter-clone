@@ -37,6 +37,7 @@ export const formatPosts = async (posts, me, fetchAuthor = true) => {
     id: post.entityId,
     author: post.author,
     content: post.content,
+    mentions: post.mentions,
     timestamp: post.timestamp,
     likes: post.likes.length - 1,
     liked: me ? post.likes.some((liker) => liker == me) : false,
