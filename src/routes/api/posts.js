@@ -1,5 +1,6 @@
 import { connect, disconnect, postRepo, userRepo } from "$lib/redis";
 import { formatPosts } from "$lib/utils";
+import sanitize from "sanitize-html";
 
 export const get = async ({ url, locals }) => {
   if (!locals.session) return { status: 403, body: { error: "Not signed in" } };
@@ -34,18 +35,25 @@ export const post = async ({ request, locals }) => {
   if (!body.has("content") || body.get("content").length > 256)
     return { status: 400, body: { error: "Invalid input" } };
 
+  const content = sanitize(body.get("content"), {
+    allowedTags: [],
+    allowedAttributes: {},
+    disallowedTagsMode: "recursiveEscape",
+  });
+  if (content.length <= 0) return { status: 400, body: { error: "Invalid input" } };
+
   await connect();
   const post = await postRepo.save(
     postRepo.createEntity({
       author: locals.session.uid,
-      content: body.get("content"),
+      content,
       timestamp: Math.round(Date.now() / 1000),
       likes: [],
     })
   );
   await disconnect();
-  
-  return acceptsJson ? { body: { success: true, post } } : { status: 302, headers: { Location: "/" } };
+
+  return acceptsJson ? { body: { success: true, post, content } } : { status: 302, headers: { Location: "/" } };
 };
 
 export const patch = async ({ request, locals }) => {

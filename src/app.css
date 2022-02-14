@@ -34,3 +34,7 @@ textarea {
 .sidelink:hover {
   @apply bg-slate-100;
 }
+
+.mention {
+  @apply text-sky-600 hover:underline;
+}

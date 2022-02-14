@@ -11,7 +11,7 @@
       <a class="font-semibold text-sm" href={`/@${post.author.at}`}>@{post.author.at}</a>
       <span class="text-slate-400 text-sm">{DateTime.fromSeconds(post.timestamp).toRelative()}</span>
     </div>
-    <p>{post.content}</p>
+    <p>{@html post.content.replace(/@[0-z]+/, (at) => `<a class="mention" href="/${at}">${at}</a>`)}</p>
     <div class="flex justify-between">
       <div
         class="cursor-pointer flex gap-2 items-center"

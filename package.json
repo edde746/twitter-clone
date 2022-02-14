@@ -24,6 +24,7 @@
     "cookie": "^0.4.2",
     "jsonwebtoken": "^8.5.1",
     "luxon": "^2.3.0",
-    "redis-om": "github:edde746/redis-om-node#add-sort-capability"
+    "redis-om": "github:edde746/redis-om-node#add-sort-capability",
+    "sanitize-html": "^2.7.0"
   }
 }

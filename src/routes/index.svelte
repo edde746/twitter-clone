@@ -21,10 +21,7 @@
 
 <svelte:window
   on:scroll={(e) => {
-    if (
-      !disablePostFetch &&
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - window.innerHeight * 0.1
-    ) {
+    if (!disablePostFetch && window.innerHeight * 1.1 + window.scrollY >= document.body.offsetHeight) {
       disablePostFetch = true;
       fetch(`/api/posts?p=${++page}`)
         .then((res) => res.json())
@@ -58,7 +55,7 @@
               {
                 id: body.post,
                 author: $me.id,
-                content: postMessage,
+                content: body.content,
                 timestamp: new Date() / 1000,
                 likes: 0,
                 liked: false,
