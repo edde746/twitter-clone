@@ -1,10 +1,7 @@
 <script context="module">
-  import { loadSelf } from "../stores/me";
-
   export const load = async ({ session, fetch }) => {
     if (!session) return { status: 302, redirect: "/login" };
     const posts = await fetch("/api/posts").then((res) => res.json());
-    await loadSelf(fetch);
     return { props: { posts } };
   };
 </script>
