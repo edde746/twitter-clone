@@ -20,11 +20,13 @@
   },
   "type": "module",
   "dependencies": {
+    "aws-sdk": "^2.1073.0",
     "bcrypt": "^5.0.1",
     "cookie": "^0.4.2",
     "jsonwebtoken": "^8.5.1",
     "luxon": "^2.3.0",
     "redis-om": "github:edde746/redis-om-node#add-sort-capability",
-    "sanitize-html": "^2.7.0"
+    "sanitize-html": "^2.7.0",
+    "sharp": "^0.30.1"
   }
 }

@@ -1,4 +1,11 @@
 import { userRepo } from "./redis";
+import S3 from "aws-sdk/clients/s3";
+
+export const s3 = new S3({
+  region: process.env["AWS_BUCKET_REGION"],
+  accessKeyId: process.env["AWS_ACCESS"],
+  secretAccessKey: process.env["AWS_SECRET"],
+});
 
 export const errorResponse = (acceptsJson, message, redirect = "", status = 400) =>
   acceptsJson

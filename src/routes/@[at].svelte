@@ -10,7 +10,7 @@
 </script>
 
 <script>
-  import { CheckIconSolid, PencilIconSolid } from "@codewithshin/svelte-heroicons";
+  import { CheckIconSolid, CloudUploadIconSolid, PencilIconSolid } from "@codewithshin/svelte-heroicons";
   import { toasts } from "svelte-toasts";
   import Interface from "$lib/Interface.svelte";
   import Post from "$lib/Post.svelte";
@@ -18,7 +18,7 @@
   import { onMount } from "svelte";
   export let user, feed;
   let editingBio = false;
-  let bio;
+  let bio, avatarUpload;
   let page = 0;
   let disablePostFetch = false;
 
@@ -39,12 +39,42 @@
   }}
 />
 
+<input
+  type="file"
+  name="avatar"
+  class="hidden"
+  bind:this={avatarUpload}
+  on:change={(e) => {
+    let body = new FormData();
+    body.append("avatar", e.target.files[0]);
+    fetch("/api/me?avatar", {
+      method: "post",
+      body,
+    })
+      .then((res) => res.json())
+      .then((res) => (user.avatar = res.avatar));
+  }}
+/>
+
 <Interface>
   <div class="border-x border-slate-300 divide-y divide-slate-300 min-h-screen">
     <div>
       <div class="block bg-slate-200 h-32" />
       <div class="p-4 flex items-center gap-3 -mt-[2rem]">
-        <img src={user.avatar} alt="Avatar" class="rounded-full w-24 aspect-square" />
+        <div
+          class="relative rounded-full overflow-hidden group"
+          on:click={() => user.id == $me.id && avatarUpload.click()}
+        >
+          {#if user.id == $me.id}
+            <div
+              class="group-hover:bg-black block group-hover:bg-opacity-10 absolute inset-0 transition cursor-pointer"
+            />
+            <CloudUploadIconSolid
+              className="absolute top-2/4 left-2/4 translate-x-[-50%] translate-y-[-50%] h-6 w-6 text-slate-200 opacity-0 group-hover:opacity-60 cursor-pointer"
+            />
+          {/if}
+          <img src={user.avatar} alt="Avatar" class="w-24 aspect-square" />
+        </div>
         <div>
           <h2 class="text-xl font-semibold">@{user.at}</h2>
           <div class="flex gap-2 items-center bio">
@@ -52,7 +82,7 @@
             &bullet;
             {#if editingBio}
               <form
-                action="/api/me"
+                action="/api/me?bio"
                 method="post"
                 class="flex gap-2 items-center"
                 use:enhance={{
