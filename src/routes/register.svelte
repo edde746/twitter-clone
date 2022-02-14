@@ -32,7 +32,7 @@
       },
     }}
   >
-    <input name="at" placeholder="Handle" class="field" />
+    <input name="at" placeholder="Handle" class="field" pattern="^[A-Za-z0-9]+$" />
     <input name="email" placeholder="E-mail" class="field" />
     <input type="password" name="password" placeholder="Password" class="field" />
     <button type="submit" class="btn sky">Register</button>

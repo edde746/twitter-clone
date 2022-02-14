@@ -13,16 +13,24 @@ export const get = async ({ url, locals }) => {
   if (url.searchParams.has("u")) authors = [url.searchParams.get("u")];
   else authors = (user.following ? [...user.following, user.entityId] : [user.entityId]).filter((followed) => followed);
 
-  const posts = await formatPosts(
-    await postRepo
-      .search()
-      .where("author")
-      .in(authors)
-      .sortBy("timestamp", "DESC")
-      .page((url.searchParams.get("p") || 0) * 20, 20),
-    locals.session.uid,
-    !url.searchParams.has("u")
-  );
+  const posts = url.searchParams.has("discover")
+    ? await formatPosts(
+        await postRepo
+          .search()
+          .sortBy("timestamp", "DESC")
+          .page((url.searchParams.get("p") || 0) * 20, 20),
+        locals.session.uid
+      )
+    : await formatPosts(
+        await postRepo
+          .search()
+          .where("author")
+          .in(authors)
+          .sortBy("timestamp", "DESC")
+          .page((url.searchParams.get("p") || 0) * 20, 20),
+        locals.session.uid,
+        !url.searchParams.has("u")
+      );
 
   await disconnect();
   return { body: await posts };
