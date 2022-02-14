@@ -24,6 +24,7 @@ export const get = async ({ params, locals }) => {
     body: {
       id: user.entityId,
       at: user.at,
+      bio: user.bio,
       avatar: user.avatar || "/images/default.png",
       followers: user.following?.length || 0,
       following: me.following?.includes(user.entityId),
