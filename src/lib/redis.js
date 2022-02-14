@@ -4,7 +4,7 @@ export const client = new Client();
 
 export const connect = async () => {
   if (client.isOpen()) return;
-  await client.open(process.env["REDIS_CONNECTION"]);
+  await client.open(process.env["REDIS_URL"]);
 };
 
 export const disconnect = async () => {
