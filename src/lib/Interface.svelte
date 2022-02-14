@@ -35,7 +35,9 @@
     </div>
     <slot />
     <div class="p-4 hidden lg:block">
-      <input type="text" class="field w-full" placeholder="Search" />
+      <form method="get" action="/search">
+        <input type="text" name="q" class="field w-full" placeholder="Search" />
+      </form>
     </div>
   </div>
 </div>

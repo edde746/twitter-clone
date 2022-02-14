@@ -31,6 +31,8 @@
         <div>
           <h2 class="text-xl font-semibold">@{user.at}</h2>
           <div class="flex gap-2 items-center bio">
+            <p>{user.followers} followers</p>
+            &bullet;
             {#if editingBio}
               <form
                 action="/api/me"

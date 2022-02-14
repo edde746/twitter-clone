@@ -17,7 +17,7 @@ export const disconnect = async () => {
 // User schema
 class User extends Entity {}
 const userSchema = new Schema(User, {
-  at: { type: "string" },
+  at: { type: "string", textSearch: true },
   email: { type: "string" },
   bio: { type: "string" },
   avatar: { type: "string" },

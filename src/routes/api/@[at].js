@@ -5,7 +5,7 @@ export const get = async ({ params, locals }) => {
   if (!locals.session) return { status: 403, body: { error: "Not signed in" } };
 
   await connect();
-  const user = await userRepo.search().where("at").eq(params.at).returnFirst();
+  const user = await userRepo.search().where("at").matchExact(params.at).returnFirst();
   if (!user) {
     await disconnect();
     return { body: { error: "Could not find user" } };
@@ -18,6 +18,7 @@ export const get = async ({ params, locals }) => {
   );
 
   const me = await userRepo.fetch(locals.session.uid);
+  const followers = await userRepo.search().where("following").contains(user.entityId).returnCount();
   await disconnect();
 
   return {
@@ -26,7 +27,7 @@ export const get = async ({ params, locals }) => {
       at: user.at,
       bio: user.bio,
       avatar: user.avatar || "/images/default.png",
-      followers: user.following?.length || 0,
+      followers,
       following: me.following?.includes(user.entityId),
       posts: posts.posts || [],
     },
@@ -37,7 +38,7 @@ export const post = async ({ url, params, locals }) => {
   if (!locals.session) return { status: 403, body: { error: "Not signed in" } };
 
   await connect();
-  const user = await userRepo.search().where("at").eq(params.at).returnFirst();
+  const user = await userRepo.search().where("at").matchExact(params.at).returnFirst();
   if (!user) {
     await disconnect();
     return { body: { error: "Could not find user" } };
