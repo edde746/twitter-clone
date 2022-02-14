@@ -15,6 +15,10 @@
   let disablePostFetch = false;
 </script>
 
+<svelte:head>
+  <title>Discover</title>
+</svelte:head>
+
 <svelte:window
   on:scroll={(e) => {
     if (!disablePostFetch && window.innerHeight * 1.1 + window.scrollY >= document.body.offsetHeight) {
@@ -32,6 +36,10 @@
 
 <Interface>
   <div class="border-x border-slate-300 divide-y divide-slate-300 min-h-screen">
+    <div class="px-4 py-8">
+      <h1 class="text-2xl font-semibold">Discover</h1>
+      <p class="text-slate-500">All posts, from everyone</p>
+    </div>
     {#each feed.posts.map((post) => ({ ...post, author: feed.authors[post.author] })) as post}
       <Post {post} />
     {/each}

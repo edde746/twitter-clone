@@ -13,7 +13,6 @@ export const get = async ({ url, locals }) => {
       followers: await userRepo.search().where("following").contains(user.entityId).returnCount(),
     }))
   );
-  await disconnect();
 
   return {
     body: { results },

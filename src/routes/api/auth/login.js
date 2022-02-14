@@ -13,7 +13,6 @@ export const post = async ({ request }) => {
 
   // Fetch user
   const user = await userRepo.search().where("email").eq(body.get("email")).returnFirst();
-  await disconnect();
 
   // Validate credentials
   if (!user || !(await bcrypt.compare(body.get("password"), user.password)))

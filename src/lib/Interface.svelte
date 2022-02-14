@@ -1,5 +1,12 @@
 <script>
-  import { BellIconSolid, CogIconSolid, HashtagIconSolid, HomeIconSolid } from "@codewithshin/svelte-heroicons";
+  import {
+    BellIconSolid,
+    ChevronRightIconSolid,
+    CogIconSolid,
+    DotsHorizontalIconSolid,
+    HashtagIconSolid,
+    HomeIconSolid,
+  } from "@codewithshin/svelte-heroicons";
   import { me } from "../stores/me";
 </script>
 
@@ -35,8 +42,30 @@
     </div>
     <slot />
     <div class="p-4 hidden lg:block">
-      <form method="get" action="/search">
-        <input type="text" name="q" class="field w-full" placeholder="Search" />
+      <form method="get" action="/search" class="grid gap-3">
+        <input type="text" name="q" class="field w-full border border-slate-300 rounded-[1rem]" placeholder="Search" />
+        <div class="border border-slate-300 rounded-[1rem] p-4 bg-white grid gap-2">
+          <h2 class="text-lg">Trends</h2>
+          <div class="text-sm flex justify-between items-center group cursor-pointer">
+            <div>
+              <p class="group-hover:underline">Not yet</p>
+              <p class="text-slate-400">999 posts</p>
+            </div>
+            <ChevronRightIconSolid />
+          </div>
+          <div class="text-sm flex justify-between items-center group cursor-pointer">
+            <div>
+              <p class="group-hover:underline">Implemented</p>
+              <p class="text-slate-400">21 posts</p>
+            </div>
+            <ChevronRightIconSolid />
+          </div>
+        </div>
+        <div class="px-4 flex gap-2 text-xs">
+          <p class="cursor-pointer text-slate-500 hover:underline">Terms of Service</p>
+          <p class="cursor-pointer text-slate-500 hover:underline">Privacy Policy</p>
+          <p class="cursor-pointer text-slate-500 hover:underline flex gap-1 items-center">More <DotsHorizontalIconSolid className="h-3 w-3" /></p>
+        </div>
       </form>
     </div>
   </div>

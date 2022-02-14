@@ -7,7 +7,6 @@ export const get = async ({ locals }) => {
 
   await connect();
   const user = await userRepo.fetch(locals.session.uid);
-  await disconnect();
   return { body: { id: user.entityId, at: user.at, email: user.email, avatar: user.avatar || "/images/default.png" } };
 };
 
@@ -32,7 +31,6 @@ export const post = async ({ request, url, locals }) => {
     if (uploaded) user.avatar = uploaded.Location + `?r=${Math.random()}`;
   }
   userRepo.save(user);
-  await disconnect();
 
   return { body: { success: true, avatar: user.avatar } };
 };

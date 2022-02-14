@@ -13,7 +13,5 @@ export const get = async () => {
   await rebuildIndex(userRepo);
   await rebuildIndex(postRepo);
 
-  await disconnect();
-
   return { body: "Rebuilt index" };
 };

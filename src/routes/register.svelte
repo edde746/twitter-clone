@@ -6,6 +6,10 @@
   let form;
 </script>
 
+<svelte:head>
+  <title>Register</title>
+</svelte:head>
+
 <div class="h-screen flex items-center justify-center p-4 flex-col gap-5">
   <h2 class="text-xl font-semibold text-zinc-500">twitter-clone</h2>
   <form

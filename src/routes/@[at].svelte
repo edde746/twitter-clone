@@ -1,9 +1,10 @@
 <script context="module">
-  import { me } from "../stores/me";
+  import { loadSelf, me } from "../stores/me";
 
   export const load = async ({ session, params, fetch }) => {
     if (!session) return { status: 302, redirect: "/login" };
     const user = await fetch(`/api/@${params.at}`).then((res) => res.json());
+    if (user.error) return { status: 302, redirect: "/" };
     const feed = await fetch(`/api/posts?u=${user.id}`).then((res) => res.json());
     return { props: { user, feed } };
   };
@@ -15,15 +16,16 @@
   import Interface from "$lib/Interface.svelte";
   import Post from "$lib/Post.svelte";
   import { enhance } from "$lib/form";
-  import { onMount } from "svelte";
   export let user, feed;
   let editingBio = false;
-  let bio, avatarUpload;
+  let avatarUpload;
   let page = 0;
   let disablePostFetch = false;
-
-  onMount(() => (bio = user.bio));
 </script>
+
+<svelte:head>
+  <title>@{user.at}</title>
+</svelte:head>
 
 <svelte:window
   on:scroll={(e) => {
@@ -52,7 +54,10 @@
       body,
     })
       .then((res) => res.json())
-      .then((res) => (user.avatar = res.avatar));
+      .then((res) => {
+        loadSelf(fetch, true);
+        user.avatar = res.avatar;
+      });
   }}
 />
 
@@ -93,7 +98,6 @@
                         title: "Success",
                         description: "Your bio has been updated",
                       });
-                      user.bio = bio;
                       editingBio = false;
                     } else {
                       toasts.error({
@@ -107,7 +111,7 @@
                 <input
                   type="text"
                   name="bio"
-                  bind:value={bio}
+                  bind:value={user.bio}
                   placeholder="Bio"
                   class="bg-transparent"
                   maxlength="64"

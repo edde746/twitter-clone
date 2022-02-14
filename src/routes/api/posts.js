@@ -32,7 +32,6 @@ export const get = async ({ url, locals }) => {
         !url.searchParams.has("u")
       );
 
-  await disconnect();
   return { body: await posts };
 };
 
@@ -59,7 +58,6 @@ export const post = async ({ request, locals }) => {
       likes: [],
     })
   );
-  await disconnect();
 
   return acceptsJson ? { body: { success: true, post, content } } : { status: 302, headers: { Location: "/" } };
 };
@@ -76,6 +74,5 @@ export const patch = async ({ request, locals }) => {
 
   await postRepo.save(post);
 
-  await disconnect();
   return { body: { liked: post.likes.includes(locals.session.uid), likes: post.likes.length - 1 } };
 };

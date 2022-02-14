@@ -11,30 +11,32 @@ textarea {
   @apply focus:outline-none;
 }
 
-.field {
-  @apply rounded-full px-4 py-2 text-sm;
-}
+@layer base {
+  .field {
+    @apply rounded-full px-4 py-2 text-sm;
+  }
 
-.btn {
-  @apply px-4 py-2 rounded-full text-sm font-semibold;
-}
+  .btn {
+    @apply px-4 py-2 rounded-full text-sm font-semibold;
+  }
 
-.btn.sky {
-  @apply bg-sky-100 text-sky-700 hover:bg-sky-200 transition;
-}
+  .btn.sky {
+    @apply bg-sky-100 text-sky-700 hover:bg-sky-200 transition;
+  }
 
-.sidelink {
-  @apply flex gap-3 rounded-full px-4 py-2 transition;
-}
+  .sidelink {
+    @apply flex gap-3 rounded-full px-4 py-2 transition;
+  }
 
-.sidelink span {
-  @apply font-bold hidden md:block;
-}
+  .sidelink span {
+    @apply font-bold hidden md:block;
+  }
 
-.sidelink:hover {
-  @apply bg-slate-100;
-}
+  .sidelink:hover {
+    @apply bg-slate-100;
+  }
 
-.mention {
-  @apply text-sky-600 hover:underline;
+  .mention {
+    @apply text-sky-600 hover:underline;
+  }
 }

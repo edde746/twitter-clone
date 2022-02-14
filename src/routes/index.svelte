@@ -19,6 +19,10 @@
   let disablePostFetch = false;
 </script>
 
+<svelte:head>
+  <title>twitter-clone</title>
+</svelte:head>
+
 <svelte:window
   on:scroll={(e) => {
     if (!disablePostFetch && window.innerHeight * 1.1 + window.scrollY >= document.body.offsetHeight) {

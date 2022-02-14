@@ -4,6 +4,10 @@
   export let results;
 </script>
 
+<svelte:head>
+  <title>Search</title>
+</svelte:head>
+
 <Interface>
   <div class="border-x border-slate-300 divide-y divide-slate-300 min-h-screen">
     {#each results as result}

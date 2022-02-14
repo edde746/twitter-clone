@@ -14,7 +14,6 @@ export const handle = async ({ event, resolve }) => {
   event.locals.session = await verifySession(cookies.session);
 
   const response = await resolve(event);
-  // await disconnect();
   return response;
 };
 
