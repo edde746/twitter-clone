@@ -3,10 +3,11 @@
   import { DateTime } from "luxon";
   export let post;
 
-  const linkMentions = (content, mentions) => {
+  const addLinks = (content, mentions) => {
     mentions?.forEach((mention) => {
       content = content.replace(mention, `<a class="mention" href="/${mention}">${mention}</a>`);
     });
+    content = content.replace(/\$[A-Za-z0-9]+/g, (tag) => `<a class="tag" href="/${tag}">${tag}</a>`);
     return content;
   };
 </script>
@@ -18,7 +19,7 @@
       <a class="font-semibold text-sm" href={`/@${post.author.at}`}>@{post.author.at}</a>
       <span class="text-slate-400 text-sm">{DateTime.fromSeconds(post.timestamp).toRelative()}</span>
     </div>
-    <p>{@html linkMentions(post.content, post.mentions)}</p>
+    <p>{@html addLinks(post.content, post.mentions)}</p>
     <div class="flex justify-between">
       <div
         class="cursor-pointer flex gap-2 items-center"

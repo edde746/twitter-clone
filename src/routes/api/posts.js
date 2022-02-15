@@ -13,24 +13,27 @@ export const get = async ({ url, locals }) => {
   if (url.searchParams.has("u")) authors = [url.searchParams.get("u")];
   else authors = (user.following ? [...user.following, user.entityId] : [user.entityId]).filter((followed) => followed);
 
-  const posts = url.searchParams.has("discover")
-    ? await formatPosts(
-        await postRepo
-          .search()
-          .sortBy("timestamp", "DESC")
-          .page((url.searchParams.get("p") || 0) * 20, 20),
-        locals.session.uid
-      )
-    : await formatPosts(
-        await postRepo
-          .search()
-          .where("author")
-          .in(authors)
-          .sortBy("timestamp", "DESC")
-          .page((url.searchParams.get("p") || 0) * 20, 20),
-        locals.session.uid,
-        !url.searchParams.has("u")
-      );
+  let posts = [];
+  const offset = (url.searchParams.get("p") || 0) * 20;
+  if (url.searchParams.has("discover")) {
+    posts = formatPosts(await postRepo.search().sortBy("timestamp", "DESC").page(offset, 20), locals.session.uid);
+  } else if (url.searchParams.has("tag")) {
+    posts = formatPosts(
+      await postRepo
+        .search()
+        .where("hashtags")
+        .contain(`\$${url.searchParams.get("tag")}`)
+        .sortBy("timestamp", "DESC")
+        .page(offset, 20),
+      locals.session.uid
+    );
+  } else {
+    posts = formatPosts(
+      await postRepo.search().where("author").in(authors).sortBy("timestamp", "DESC").page(offset, 20),
+      locals.session.uid,
+      !url.searchParams.has("u")
+    );
+  }
 
   return { body: await posts };
 };
@@ -62,11 +65,15 @@ export const post = async ({ request, locals }) => {
     .filter((user) => user.exists)
     .map((mention) => mention.at);
 
+  // Get hashtags
+  const hashtags = [...content.matchAll(/\$[A-Za-z0-9]+/g)].map((tag) => tag[0]);
+
   const post = await postRepo.save(
     postRepo.createEntity({
       author: locals.session.uid,
       content,
-      mentions: mentions,
+      mentions,
+      hashtags,
       timestamp: Math.round(Date.now() / 1000),
       likes: [],
     })

@@ -33,6 +33,7 @@ const postSchema = new Schema(Post, {
   author: { type: "string" },
   content: { type: "string" },
   mentions: { type: "array" },
+  hashtags: { type: "array" },
   timestamp: { type: "number", sortable: true },
   likes: { type: "array" },
 });

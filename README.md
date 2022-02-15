@@ -8,7 +8,6 @@ https://twce746.herokuapp.com/
 
 ## Missing Features
 
-* Hashtags
 * Trending
 * Attachments
 * Reposts
