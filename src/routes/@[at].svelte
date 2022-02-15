@@ -45,6 +45,7 @@
   type="file"
   name="avatar"
   class="hidden"
+  accept=".png,.jpg,.jpeg,.bmp,.tiff"
   bind:this={avatarUpload}
   on:change={(e) => {
     let body = new FormData();

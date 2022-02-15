@@ -1,6 +1,6 @@
-import { connect, disconnect, userRepo } from "$lib/redis";
+import { connect, userRepo } from "$lib/redis";
 import { s3 } from "$lib/utils";
-import sharp from "sharp";
+import Jimp from "jimp/es";
 
 export const get = async ({ locals }) => {
   if (!locals.session) return { status: 403, body: { error: "Not authorized" } };
@@ -20,11 +20,11 @@ export const post = async ({ request, url, locals }) => {
   if (url.searchParams.has("bio")) {
     user.bio = body.get("bio");
   } else if (url.searchParams.has("avatar")) {
-    const avatar = new Uint8Array(await body.get("avatar").arrayBuffer());
+    const avatar = await body.get("avatar").arrayBuffer();
     const uploaded = await s3
       .upload({
         Bucket: process.env["AWS_BUCKET_NAME"],
-        Body: await sharp(avatar).resize(256, 256, { fit: "cover" }).webp().toBuffer(),
+        Body: await Jimp.read(avatar).then((img) => img.cover(256, 256).getBufferAsync(Jimp.MIME_PNG)),
         Key: user.entityId + ".webp",
       })
       .promise();
