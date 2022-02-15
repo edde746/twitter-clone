@@ -4,7 +4,7 @@ Simple twitter clone built with SvelteKit and Redis.
 
 ## Live Preview
 
-To be added
+https://twce746.herokuapp.com/
 
 ## Missing Features
 
@@ -13,6 +13,7 @@ To be added
 * Attachments
 * Reposts
 * Replies
+* Notifications
 
 ## Developing
 
