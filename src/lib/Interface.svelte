@@ -8,6 +8,7 @@
     HomeIconSolid,
   } from "@codewithshin/svelte-heroicons";
   import { me } from "../stores/me";
+  import { trending } from "../stores/trending";
 </script>
 
 <div class="max-w-7xl mx-auto">
@@ -45,26 +46,27 @@
       <form method="get" action="/search" class="grid gap-3">
         <input type="text" name="q" class="field w-full border border-slate-300 rounded-[1rem]" placeholder="Search" />
         <div class="border border-slate-300 rounded-[1rem] p-4 bg-white grid gap-2">
-          <h2 class="text-lg">Trends</h2>
-          <div class="text-sm flex justify-between items-center group cursor-pointer">
-            <div>
-              <p class="group-hover:underline">Not yet</p>
-              <p class="text-slate-400">999 posts</p>
-            </div>
-            <ChevronRightIconSolid />
-          </div>
-          <div class="text-sm flex justify-between items-center group cursor-pointer">
-            <div>
-              <p class="group-hover:underline">Implemented</p>
-              <p class="text-slate-400">21 posts</p>
-            </div>
-            <ChevronRightIconSolid />
-          </div>
+          <h2 class="text-lg">Trending</h2>
+          {#if $trending?.trending?.length}
+            {#each $trending.trending as trend}
+              <a class="text-sm flex justify-between items-center group" href={`/${trend[0]}`}>
+                <div>
+                  <p class="group-hover:underline">{trend[0]}</p>
+                  <p class="text-slate-400">{trend[1]} posts</p>
+                </div>
+                <ChevronRightIconSolid />
+              </a>
+            {/each}
+          {:else}
+            <p class="text-slate-400">No active trends</p>
+          {/if}
         </div>
         <div class="px-4 flex gap-2 text-xs">
           <p class="cursor-pointer text-slate-500 hover:underline">Terms of Service</p>
           <p class="cursor-pointer text-slate-500 hover:underline">Privacy Policy</p>
-          <p class="cursor-pointer text-slate-500 hover:underline flex gap-1 items-center">More <DotsHorizontalIconSolid className="h-3 w-3" /></p>
+          <p class="cursor-pointer text-slate-500 hover:underline flex gap-1 items-center">
+            More <DotsHorizontalIconSolid className="h-3 w-3" />
+          </p>
         </div>
       </form>
     </div>

@@ -1,6 +1,5 @@
 <script context="module">
   import { enhance } from "$lib/form";
-  import { goto } from "$app/navigation";
   import { toasts } from "svelte-toasts";
 
   let form;
@@ -25,7 +24,8 @@
             title: "Logged in",
             description: `Welcome back, ${body.at}!`,
           });
-          goto("/");
+          // Forceful navigation, goto does not seem to want to work :(
+          window.location = "/";
         } else {
           toasts.error({
             title: "Error",

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { serialize } from "cookie";
-import { connect, disconnect, userRepo } from "$lib/redis";
+import { connect, userRepo } from "$lib/redis";
 import { errorResponse } from "$lib/utils";
 
 export const post = async ({ request }) => {
