@@ -24,7 +24,7 @@ export const post = async ({ request }) => {
     "set-cookie": serialize("session", token, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 7,
-      sameSite: "strict",
+      sameSite: "lax",
       secure: true,
       path: "/",
     }),
