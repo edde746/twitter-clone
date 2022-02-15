@@ -1,4 +1,4 @@
-import { connect, disconnect, userRepo, postRepo } from "$lib/redis";
+import { connect, userRepo } from "$lib/redis";
 
 export const get = async ({ params, locals }) => {
   if (!locals.session) return { status: 403, body: { error: "Not signed in" } };

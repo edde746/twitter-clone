@@ -17,7 +17,6 @@ export const handle = async ({ event, resolve }) => {
   return response;
 };
 
-export const getSession = async ({ request }) => {
-  const cookies = parse(request.headers.get("cookie") || "");
-  return verifySession(cookies.session);
+export const getSession = async ({ locals }) => {
+  return locals.session;
 };

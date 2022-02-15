@@ -9,9 +9,10 @@ https://twce746.herokuapp.com/
 ## Missing Features
 
 * Attachments
-* Reposts
 * Replies
 * Notifications
+* Caching
+    * Cache trends to improve performance
 
 ## Developing
 

@@ -31,6 +31,7 @@ export const userRepo = new Repository(userSchema, client);
 class Post extends Entity {}
 const postSchema = new Schema(Post, {
   author: { type: "string" },
+  repost: { type: "string" },
   content: { type: "string" },
   mentions: { type: "array" },
   hashtags: { type: "array" },

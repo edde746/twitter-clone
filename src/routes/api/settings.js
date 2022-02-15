@@ -1,4 +1,4 @@
-import { connect, disconnect, userRepo } from "$lib/redis";
+import { connect, userRepo } from "$lib/redis";
 import bcrypt from "bcrypt";
 
 export const post = async ({ request, locals }) => {

@@ -1,7 +1,10 @@
 <script>
-  import { HeartIconOutline, HeartIconSolid } from "@codewithshin/svelte-heroicons";
+  import { HeartIconOutline, HeartIconSolid, RefreshIconOutline } from "@codewithshin/svelte-heroicons";
+  import { authors } from "../stores/authors";
   import { DateTime } from "luxon";
-  export let post;
+  import { toasts } from "svelte-toasts";
+  export let post, pushFront;
+  let author = $authors[post.repost || post.author];
 
   const addLinks = (content, mentions) => {
     mentions?.forEach((mention) => {
@@ -12,35 +15,75 @@
   };
 </script>
 
-<div class="flex gap-2 p-4">
-  <img src={post.author.avatar} alt="Avatar" class="h-6 w-6 rounded-full" />
-  <div class="flex-1">
-    <div class="flex justify-between items-center">
-      <a class="font-semibold text-sm" href={`/@${post.author.at}`}>@{post.author.at}</a>
-      <span class="text-slate-400 text-sm">{DateTime.fromSeconds(post.timestamp).toRelative()}</span>
+<div class="p-4">
+  <div class="flex gap-2">
+    <div class="relative">
+      {#if post.repost}
+        <img src={$authors[post.repost]?.avatar} alt="Avatar" class="h-6 w-6 rounded-full mr-2 mb-2" />
+        <img src={$authors[post.author]?.avatar} alt="Avatar" class="h-6 w-6 rounded-full absolute left-2 top-2" />
+      {:else}
+        <img src={$authors[post.author]?.avatar} alt="Avatar" class="h-8 w-8 rounded-full" />
+      {/if}
     </div>
-    <p>{@html addLinks(post.content, post.mentions)}</p>
-    <div class="flex justify-between">
-      <div
-        class="cursor-pointer flex gap-2 items-center"
-        on:click={() =>
-          fetch("/api/posts", {
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            method: "PATCH",
-            body: JSON.stringify({ post: post.id }),
-          })
-            .then((res) => res.json())
-            .then((res) => (post = { ...post, ...res }))}
-      >
-        {#if post.liked}
-          <HeartIconSolid className="h-5 w-5 text-red-500" />
-        {:else}
-          <HeartIconOutline className="h-5 w-5 hover:text-red-500" />
-        {/if}
-        <span class="text-sm">{post.likes}</span>
+    <div class="flex-1">
+      <div class="flex justify-between items-center">
+        <p class="font-semibold text-sm">
+          {#if post.repost}
+            <a href={`/@${$authors[post.author]?.at}`}>@{$authors[post.author]?.at}</a>
+            <span class="font-normal">reposted from</span>
+          {/if}
+          <a href={`/@${author?.at}`}>@{author?.at}</a>
+        </p>
+        <span class="text-slate-400 text-sm">{DateTime.fromSeconds(post.timestamp).toRelative()}</span>
+      </div>
+      <p>{@html addLinks(post.content, post.mentions)}</p>
+      <div class="grid grid-cols-4">
+        <div
+          class="cursor-pointer flex gap-2 items-center"
+          on:click={() =>
+            fetch("/api/posts", {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              method: "PATCH",
+              body: JSON.stringify({ post: post.id }),
+            })
+              .then((res) => res.json())
+              .then((res) => (post = { ...post, ...res }))}
+        >
+          {#if post.liked}
+            <HeartIconSolid className="h-5 w-5 text-red-500" />
+          {:else}
+            <HeartIconOutline className="h-5 w-5 hover:text-red-500 transition" />
+          {/if}
+          <span class="text-sm">{post.likes}</span>
+        </div>
+        <div
+          class="cursor-pointer"
+          on:click={() => {
+            if (post.repost) toasts.error({ title: "Failed", description: "You can not repost a repost" });
+            fetch("/api/repost", {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ post: post.id }),
+            })
+              .then((res) => res.json())
+              .then((res) => {
+                if (res.success) {
+                  toasts.success({ title: "Reposted", description: "Successfully reposted" });
+                  if (pushFront) pushFront({ ...res.post, id: res.id });
+                } else {
+                  toasts.error({ title: "Error", description: res.error });
+                }
+              });
+          }}
+        >
+          <RefreshIconOutline className="h-5 w-5 hover:text-slate-600 transition" />
+        </div>
       </div>
     </div>
   </div>

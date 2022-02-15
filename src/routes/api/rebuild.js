@@ -1,4 +1,4 @@
-import { connect, disconnect, userRepo, postRepo } from "$lib/redis";
+import { connect, userRepo, postRepo } from "$lib/redis";
 
 // Temporary solution, gotta be a better way to do this
 export const get = async () => {

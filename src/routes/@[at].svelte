@@ -1,5 +1,6 @@
 <script context="module">
   import { loadSelf, me } from "../stores/me";
+  import { authors } from "../stores/authors";
   import { get } from "svelte/store";
 
   export const load = async ({ session, fetch, params }) => {
@@ -7,6 +8,7 @@
     const user = await fetch(`/api/@${params.at}`).then((res) => res.json());
     if (user.error) return { status: 302, redirect: "/" };
     const feed = await fetch(`/api/posts?u=${user.id}`).then((res) => res.json());
+    authors.set({ ...get(authors), ...feed.authors });
     return { props: { user, feed } };
   };
 </script>
@@ -152,7 +154,7 @@
       </div>
     </div>
 
-    {#each feed.posts.map((post) => ({ ...post, author: user })) as post}
+    {#each feed.posts as post}
       <Post {post} />
     {/each}
   </div>

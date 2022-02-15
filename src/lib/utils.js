@@ -18,16 +18,18 @@ export const formatPosts = async (posts, me, fetchAuthor = true) => {
     ? Object.fromEntries(
         await Promise.all(
           // Set to only fetch an author once
-          [...new Set(posts.map((post) => post.author))].map(async (author) => {
-            author = await userRepo.fetch(author);
-            return [
-              author.entityId,
-              {
-                at: author.at,
-                avatar: author.avatar || "/images/default.png",
-              },
-            ];
-          })
+          [...new Set(posts.flatMap((post) => [post.author, post.repost || 0]))]
+            .filter((e) => e)
+            .map(async (author) => {
+              author = await userRepo.fetch(author);
+              return [
+                author.entityId,
+                {
+                  at: author.at,
+                  avatar: author.avatar || "/images/default.png",
+                },
+              ];
+            })
         )
       )
     : undefined;
@@ -36,6 +38,7 @@ export const formatPosts = async (posts, me, fetchAuthor = true) => {
   posts = posts.map((post) => ({
     id: post.entityId,
     author: post.author,
+    repost: post.repost,
     content: post.content,
     mentions: post.mentions,
     timestamp: post.timestamp,
