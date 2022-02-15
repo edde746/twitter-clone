@@ -1,6 +1,6 @@
 import { connect, userRepo } from "$lib/redis";
 import { s3 } from "$lib/utils";
-import Jimp from "jimp/es";
+import Jimp from "jimp";
 
 export const get = async ({ locals }) => {
   if (!locals.session) return { status: 403, body: { error: "Not authorized" } };

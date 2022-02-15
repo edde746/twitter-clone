@@ -1,4 +1,4 @@
-import { connect, disconnect, postRepo, userRepo } from "$lib/redis";
+import { connect, postRepo, userRepo } from "$lib/redis";
 import { formatPosts } from "$lib/utils";
 import sanitize from "sanitize-html";
 

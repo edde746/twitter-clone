@@ -1,4 +1,4 @@
-import { connect, disconnect, userRepo } from "$lib/redis";
+import { connect, userRepo } from "$lib/redis";
 import { errorResponse } from "$lib/utils";
 import bcrypt from "bcrypt";
 
@@ -11,7 +11,7 @@ export const post = async ({ request }) => {
   await connect();
 
   // Check for existing user
-  const existing = await userRepo.search().where("email").eq(body.get("email")).or("at").eq(body.get("at")).returnAll();
+  const existing = await userRepo.search().where("email").eq(body.get("email")).or("at").match(body.get("at")).returnAll();
   if (existing.length) return errorResponse(acceptsJson, "Email or username already in use", "/register");
 
   // Save user to database

@@ -1,5 +1,5 @@
 import { userRepo } from "./redis";
-import S3 from "aws-sdk/clients/s3";
+import S3 from "aws-sdk/clients/s3.js";
 
 export const s3 = new S3({
   region: process.env["AWS_BUCKET_REGION"],
