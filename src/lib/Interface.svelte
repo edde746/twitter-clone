@@ -33,11 +33,11 @@
         <span>Settings</span>
       </a>
 
-      <a href={`/@${$me.at}`} class="flex gap-2 items-center sidelink mt-auto">
-        <img src={$me.avatar} alt="Avatar" class="w-6 md:w-8 lg:w-10 aspect-square rounded-full" />
+      <a href={`/@${$me?.at}`} class="flex gap-2 items-center sidelink mt-auto">
+        <img src={$me?.avatar} alt="Avatar" class="w-6 md:w-8 lg:w-10 aspect-square rounded-full" />
         <div class="hidden md:block">
-          <p class="font-semibold">@{$me.at}</p>
-          <p class="text-sm">{$me.email}</p>
+          <p class="font-semibold">@{$me?.at}</p>
+          <p class="text-sm">{$me?.email}</p>
         </div>
       </a>
     </div>

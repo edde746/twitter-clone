@@ -3,6 +3,13 @@
   import { goto } from "$app/navigation";
   import { toasts } from "svelte-toasts";
 
+  export const load = async ({ session }) => {
+    if (session) return { status: 302, redirect: "/" };
+    return {};
+  };
+</script>
+
+<script>
   let form;
 </script>
 

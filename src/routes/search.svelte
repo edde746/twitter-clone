@@ -1,3 +1,13 @@
+<script context="module">
+  import { me } from "../stores/me";
+  import { get } from "svelte/store";
+
+  export const load = async ({ session }) => {
+    if (!session && !Object.keys(get(me)).length) return { status: 302, redirect: "/login" };
+    return {};
+  };
+</script>
+
 <script>
   import Interface from "$lib/Interface.svelte";
   import { ChevronRightIconSolid } from "@codewithshin/svelte-heroicons";

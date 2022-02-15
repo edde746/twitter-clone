@@ -1,7 +1,16 @@
 <script context="module">
   import { enhance } from "$lib/form";
+  import { goto } from "$app/navigation";
   import { toasts } from "svelte-toasts";
+  import { loadSelf } from "../stores/me";
 
+  export const load = async ({ session }) => {
+    if (session) return { status: 302, redirect: "/" };
+    return {};
+  };
+</script>
+
+<script>
   let form;
 </script>
 
@@ -24,8 +33,8 @@
             title: "Logged in",
             description: `Welcome back, ${body.at}!`,
           });
-          // Forceful navigation, goto does not seem to want to work :(
-          window.location = "/";
+          await loadSelf(fetch, true);
+          goto("/");
         } else {
           toasts.error({
             title: "Error",

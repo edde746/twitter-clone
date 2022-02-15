@@ -1,8 +1,17 @@
+<script context="module">
+  import { me, loadSelf } from "../stores/me";
+  import { get } from "svelte/store";
+
+  export const load = async ({ session }) => {
+    if (!session && !Object.keys(get(me)).length) return { status: 302, redirect: "/login" };
+    return {};
+  };
+</script>
+
 <script>
   import Interface from "$lib/Interface.svelte";
   import { toasts } from "svelte-toasts";
   import { enhance } from "$lib/form";
-  import { loadSelf, me } from "../stores/me";
 </script>
 
 <svelte:head>

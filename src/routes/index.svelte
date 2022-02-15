@@ -1,6 +1,9 @@
 <script context="module">
+  import { me } from "../stores/me";
+  import { get } from "svelte/store";
+
   export const load = async ({ session, fetch }) => {
-    if (!session) return { status: 302, redirect: "/login" };
+    if (!session && !Object.keys(get(me)).length) return { status: 302, redirect: "/login" };
     const feed = await fetch("/api/posts").then((res) => res.json());
     return { props: { feed } };
   };
@@ -11,7 +14,6 @@
   import { enhance } from "$lib/form";
   import Interface from "$lib/Interface.svelte";
   import Post from "$lib/Post.svelte";
-  import { me } from "../stores/me";
 
   export let feed;
   let postForm, postMessage;
@@ -30,7 +32,7 @@
       fetch(`/api/posts?p=${++page}`)
         .then((res) => res.json())
         .then((res) => {
-          disablePostFetch = res.posts.length == 0;
+          disablePostFetch = res.posts?.length == 0;
           feed.posts = [...feed.posts, ...res.posts];
           feed.authors = { ...feed.authors, ...res.authors };
         });
@@ -95,9 +97,11 @@
       </div>
     </form>
 
-    {#each feed.posts.map((post) => ({ ...post, author: feed.authors[post.author] })) as post}
-      <Post {post} />
-    {/each}
+    {#if feed?.posts?.length}
+      {#each feed?.posts?.map((post) => ({ ...post, author: feed.authors[post.author] })) as post}
+        <Post {post} />
+      {/each}
+    {/if}
 
     <h2 class="text-center p-4">{feed.posts?.length ? "End of feed" : "No posts in feed"}</h2>
   </div>

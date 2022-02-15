@@ -1,8 +1,9 @@
 <script context="module">
   import { loadSelf, me } from "../stores/me";
+  import { get } from "svelte/store";
 
-  export const load = async ({ session, params, fetch }) => {
-    if (!session) return { status: 302, redirect: "/login" };
+  export const load = async ({ session, fetch, params }) => {
+    if (!session && !Object.keys(get(me)).length) return { status: 302, redirect: "/login" };
     const user = await fetch(`/api/@${params.at}`).then((res) => res.json());
     if (user.error) return { status: 302, redirect: "/" };
     const feed = await fetch(`/api/posts?u=${user.id}`).then((res) => res.json());

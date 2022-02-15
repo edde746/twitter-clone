@@ -1,6 +1,9 @@
 <script context="module">
+  import { me } from "../stores/me";
+  import { get } from "svelte/store";
+
   export const load = async ({ session, fetch }) => {
-    if (!session) return { status: 302, redirect: "/login" };
+    if (!session && !Object.keys(get(me)).length) return { status: 302, redirect: "/login" };
     const feed = await fetch("/api/posts?discover").then((res) => res.json());
     return { props: { feed } };
   };
