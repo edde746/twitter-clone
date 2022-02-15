@@ -13,7 +13,9 @@ export const get = async ({ locals }) => {
       .greaterThan(new Date() / 1000 - 24 * 60 * 60)
       .returnAll()
   ).forEach((post) =>
-    post?.hashtags?.forEach((tag) => (trendingTags[tag] = trendingTags.hasOwnProperty(tag) ? trendingTags[tag] + 1 : 1))
+    post?.hashtags
+      ?.filter((e) => e)
+      .forEach((tag) => (trendingTags[tag] = trendingTags.hasOwnProperty(tag) ? trendingTags[tag] + 1 : 1))
   );
   trendingTags = Object.entries(trendingTags);
 

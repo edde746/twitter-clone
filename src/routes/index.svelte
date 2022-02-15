@@ -72,7 +72,9 @@
               ...feed.posts,
             ];
             // Make sure we are one of the authors
-            feed.authors[$me.id] = $me;
+            let currentAuthors = get(authors);
+            currentAuthors[$me.id] = $me;
+            $authors.set(currentAuthors);
 
             // Reset input
             postForm.reset();

@@ -3,6 +3,7 @@
   import { authors } from "../stores/authors";
   import { DateTime } from "luxon";
   import { toasts } from "svelte-toasts";
+  import { me } from "../stores/me";
   export let post, pushFront;
   let author = $authors[post.repost || post.author];
 
@@ -19,20 +20,24 @@
   <div class="flex gap-2">
     <div class="relative">
       {#if post.repost}
-        <img src={$authors[post.repost]?.avatar} alt="Avatar" class="h-6 w-6 rounded-full mr-2 mb-2" />
-        <img src={$authors[post.author]?.avatar} alt="Avatar" class="h-6 w-6 rounded-full absolute left-2 top-2" />
+        <img src={$authors[post.repost]?.avatar} alt="OP" class="h-6 w-6 rounded-full mr-2 mb-2" />
+        <img
+          src={$authors[post.author]?.avatar || $me?.avatar}
+          alt="Reposter"
+          class="h-6 w-6 rounded-full absolute left-2 top-2"
+        />
       {:else}
-        <img src={$authors[post.author]?.avatar} alt="Avatar" class="h-8 w-8 rounded-full" />
+        <img src={$authors[post.author]?.avatar || $me?.avatar} alt="Avatar" class="h-8 w-8 rounded-full" />
       {/if}
     </div>
     <div class="flex-1">
       <div class="flex justify-between items-center">
         <p class="font-semibold text-sm">
+          <a href={`/@${$authors[post.author]?.at || $me?.at}`}>@{$authors[post.author]?.at || $me?.at}</a>
           {#if post.repost}
-            <a href={`/@${$authors[post.author]?.at}`}>@{$authors[post.author]?.at}</a>
             <span class="font-normal">reposted from</span>
+            <a href={`/@${$authors[post.repost]?.at}`}>@{$authors[post.repost]?.at}</a>
           {/if}
-          <a href={`/@${author?.at}`}>@{author?.at}</a>
         </p>
         <span class="text-slate-400 text-sm">{DateTime.fromSeconds(post.timestamp).toRelative()}</span>
       </div>
@@ -57,7 +62,7 @@
           {:else}
             <HeartIconOutline className="h-5 w-5 hover:text-red-500 transition" />
           {/if}
-          <span class="text-sm">{post.likes}</span>
+          <span class="text-sm">{post.likes || 0}</span>
         </div>
         <div
           class="cursor-pointer"
