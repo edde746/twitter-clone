@@ -5,7 +5,6 @@
   import { toasts } from "svelte-toasts";
   import { me } from "../stores/me";
   export let post, pushFront;
-  let author = $authors[post.repost || post.author];
 
   const addLinks = (content, mentions) => {
     mentions?.forEach((mention) => {
@@ -42,6 +41,9 @@
         <span class="text-slate-400 text-sm">{DateTime.fromSeconds(post.timestamp).toRelative()}</span>
       </div>
       <p>{@html addLinks(post.content, post.mentions)}</p>
+      {#if post.attachment}
+        <img src={post.attachment} alt="Attachment" class="w-full rounded-md my-2">
+      {/if}
       <div class="grid grid-cols-4">
         <div
           class="cursor-pointer flex gap-2 items-center"
@@ -65,7 +67,7 @@
           <span class="text-sm">{post.likes || 0}</span>
         </div>
         <div
-          class="cursor-pointer"
+          class="cursor-pointer flex gap-2"
           on:click={() => {
             if (post.repost) toasts.error({ title: "Failed", description: "You can not repost a repost" });
             fetch("/api/repost", {
@@ -88,6 +90,7 @@
           }}
         >
           <RefreshIconOutline className="h-5 w-5 hover:text-slate-600 transition" />
+          <span class="text-sm">Repost</span>
         </div>
       </div>
     </div>

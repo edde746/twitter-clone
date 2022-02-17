@@ -1,6 +1,9 @@
 import { connect, postRepo, userRepo } from "$lib/redis";
 import { formatPosts } from "$lib/utils";
 import sanitize from "sanitize-html";
+import { v4 as uuid } from "uuid";
+import { s3 } from "$lib/utils";
+import Jimp from "jimp";
 
 export const get = async ({ url, locals }) => {
   if (!locals.session) return { status: 403, body: { error: "Not signed in" } };
@@ -68,19 +71,41 @@ export const post = async ({ request, locals }) => {
   // Get hashtags
   const hashtags = [...content.matchAll(/\$[A-Za-z0-9]+/g)].map((tag) => tag[0]);
 
+  let attachment = undefined;
+  if (body.has("attachment")) {
+    let attached = body.get("attachment");
+    if (attached?.size) {
+      attachment = await s3
+        .upload({
+          Bucket: process.env["AWS_BUCKET_NAME"],
+          Body: await Jimp.read(await attached.arrayBuffer()).then((img) =>
+            img.resize(img.getWidth() > 800 ? 800 : img.getWidth(), Jimp.AUTO).getBufferAsync(Jimp.MIME_PNG)
+          ),
+          Key: uuid() + ".webp",
+        })
+        .promise();
+    }
+  }
+
   const post = await postRepo.save(
     postRepo.createEntity({
       author: locals.session.uid,
       content,
       mentions,
       hashtags,
+      attachment: attachment?.Location || null,
       timestamp: Math.round(Date.now() / 1000),
       likes: [],
     })
   );
 
   return acceptsJson
-    ? { body: { success: true, post, content, mentions } }
+    ? {
+        body: {
+          success: true,
+          post: (await formatPosts([await postRepo.fetch(post)], locals.session.uid, false)).posts[0],
+        },
+      }
     : { status: 302, headers: { Location: "/" } };
 };
 

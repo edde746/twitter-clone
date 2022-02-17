@@ -33,6 +33,7 @@ const postSchema = new Schema(Post, {
   author: { type: "string" },
   repost: { type: "string" },
   content: { type: "string" },
+  attachment: { type: "string" },
   mentions: { type: "array" },
   hashtags: { type: "array" },
   timestamp: { type: "number", sortable: true },

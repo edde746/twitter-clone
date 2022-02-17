@@ -39,6 +39,7 @@ export const formatPosts = async (posts, me, fetchAuthor = true) => {
     id: post.entityId,
     author: post.author,
     repost: post.repost,
+    attachment: post.attachment,
     content: post.content,
     mentions: post.mentions,
     timestamp: post.timestamp,

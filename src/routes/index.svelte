@@ -16,9 +16,10 @@
   import { enhance } from "$lib/form";
   import Interface from "$lib/Interface.svelte";
   import Post from "$lib/Post.svelte";
+  import { PhotographIconSolid } from "@codewithshin/svelte-heroicons";
 
   export let feed;
-  let postForm, postMessage;
+  let postForm, postMessage, attachment;
   let page = 0;
   let disablePostFetch = false;
 </script>
@@ -59,22 +60,11 @@
             });
 
             // Add post to pool
-            feed.posts = [
-              {
-                id: body.post,
-                author: $me.id,
-                content: body.content,
-                mentions: body.mentions,
-                timestamp: new Date() / 1000,
-                likes: 0,
-                liked: false,
-              },
-              ...feed.posts,
-            ];
+            feed.posts = [body.post, ...feed.posts];
             // Make sure we are one of the authors
             let currentAuthors = get(authors);
             currentAuthors[$me.id] = $me;
-            $authors.set(currentAuthors);
+            authors.set(currentAuthors);
 
             // Reset input
             postForm.reset();
@@ -96,8 +86,22 @@
         bind:value={postMessage}
       />
       <div class="flex justify-between items-center">
-        <p class="text-sm font-semibold text-slate-500">{postMessage?.length || 0}/256</p>
-        <button class="btn sky" type="submit">Post</button>
+        <div>
+          <div class="text-sky-500 hover:text-sky-400 transition cursor-pointer" on:click={() => attachment.click()}>
+            <PhotographIconSolid className="h-5 w-5" />
+            <input
+              type="file"
+              name="attachment"
+              class="hidden"
+              accept=".png,.jpg,.jpeg,.bmp,.tiff"
+              bind:this={attachment}
+            />
+          </div>
+        </div>
+        <div class="flex gap-4 items-center">
+          <p class="text-xs font-semibold text-slate-500">{postMessage?.length || 0}/256</p>
+          <button class="btn sky" type="submit">Post</button>
+        </div>
       </div>
     </form>
 
