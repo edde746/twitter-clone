@@ -22,6 +22,7 @@
   let postForm, postMessage, attachment;
   let page = 0;
   let disablePostFetch = false;
+  let posting = false;
 </script>
 
 <svelte:head>
@@ -51,6 +52,12 @@
       method="post"
       class="bg-slate-100 bg-opacity-50 p-4 space-y-2"
       use:enhance={{
+        check: () => {
+          if (posting) return false;
+
+          posting = true;
+          return true;
+        },
         callback: async (res) => {
           const body = await res.json();
           if (body.success) {
@@ -75,13 +82,16 @@
               description: body.error,
             });
           }
+
+          posting = false;
         },
       }}
     >
       <textarea
-        class="w-full resize-none bg-transparent"
+        class={`w-full resize-none bg-transparent ${posting ? " text-slate-400" : ""}`}
         placeholder="Write a message..."
         name="content"
+        disabled={posting}
         maxlength="256"
         bind:value={postMessage}
       />
@@ -100,7 +110,7 @@
         </div>
         <div class="flex gap-4 items-center">
           <p class="text-xs font-semibold text-slate-500">{postMessage?.length || 0}/256</p>
-          <button class="btn sky" type="submit">Post</button>
+          <button class={posting ? "btn bg-sky-100 bg-opacity-75" : "btn sky"} type="submit">Post</button>
         </div>
       </div>
     </form>
